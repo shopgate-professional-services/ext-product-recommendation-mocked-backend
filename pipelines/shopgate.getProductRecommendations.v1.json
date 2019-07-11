@@ -1,0 +1,45 @@
+{
+  "version": "1",
+  "pipeline": {
+    "id": "shopgate.getProductRecommendations.v1",
+    "public": true,
+    "input": [
+      {"key": "sgxsMeta", "id": "1000"},
+      {"key":  "type", "id":  "1010"},
+      {"key": "id", "id":  "1020"}
+    ],
+    "output": [
+      {"key":  "products", "id": "3000"}
+    ],
+    "steps": [
+      {
+        "type": "extension",
+        "id": "@shopgate-project/product-recommendations-mocked-backend",
+        "path": "@shopgate-project/product-recommendations-mocked-backend/steps/prepareParams.js",
+        "input": [
+          {"key": "sgxsMeta", "id": "1000"},
+          {"key":  "type", "id":  "1010"},
+          {"key":  "id", "id":  "1020"}
+        ],
+        "output": [
+          {"key":  "searchPhrase", "id": "2010"},
+          {"key":  "limit", "id":  "2020"},
+          {"key":  "offset", "id":  "2030"}
+        ]
+      },
+      {
+        "type": "pipeline",
+        "id": "shopgate.catalog.getProductsBySearchPhrase.v1",
+        "input": [
+          {"key": "sgxsMeta", "id": "1000"},
+          {"key": "searchPhrase", "id": "2010"},
+          {"key": "limit", "id": "2020"},
+          {"key": "offset", "id": "2030"}
+        ],
+        "output": [
+          {"key": "products", "id": "3000"}
+        ]
+      }
+    ]
+  }
+}
